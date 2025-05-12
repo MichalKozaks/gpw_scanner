@@ -2,9 +2,14 @@ from selenium.webdriver.chrome.service import Service
 
 from source.conManager import ConnectionManager
 from source.dataParser import DataParser
+from source.fdata import IncomeGrossProfit
 from source.incomeFabric import IncomeFabric
 
 url = "https://www.biznesradar.pl/raporty-finansowe-rachunek-zyskow-i-strat/ORLEN"
+#Q -kwartalne
+#Y -roczne
+#C -skumulowane
+
 service = Service('C:\\chromium-browser\\chromedriver.exe')
 connection = ConnectionManager(url, service)
 driver = connection.start_selenium_connection()
@@ -13,13 +18,15 @@ soup = connection.start_parse(driver)
 parser = DataParser("report-table")
 rows = parser.table_finder(soup)
 
-Incomes = parser.fetch_chosen_income(rows, "Przychody ze sprzedaży")
+IncomeRevenuesData = parser.fetch_chosen_income(rows, "Przychody ze sprzedaży")
+IncomeGrossProfitData = parser.fetch_chosen_income(rows, "Zysk ze sprzedaży")
 Years = parser.fetch_report_years(rows)
 new_income = IncomeFabric()
-Income_revenues_collection = new_income.create_income_collection(Incomes, Years)
+Income_revenues_collection = new_income.create_income_collection(IncomeRevenuesData, Years)
+Income_Gross_Profit_collection = new_income.create_income_collection(IncomeGrossProfitData, Years, IncomeGrossProfit)
 
 all_income = 0
-for income in Income_revenues_collection:
+for income in Income_Gross_Profit_collection:
     all_income += income.income
     print(f" {income.id_year}, {income.income}, {income.r_to_r}, {income.r_to_r_industry}")
 

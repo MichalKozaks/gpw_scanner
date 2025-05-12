@@ -1,3 +1,4 @@
+
 class FinancialData:
     def __init__(self, id_year, f_data, year_to_year, year_to_year_trade):
         self.id_year = id_year
@@ -13,6 +14,10 @@ class IncomeRevenues(FinancialData):
         self.r_to_r = r_to_r
         self.r_to_r_industry = r_to_r_industry
 
-
-
-
+#Zysk ze sprzedaży
+class IncomeGrossProfit(FinancialData):
+    def __init__(self, id_year, income, r_to_r, r_to_r_industry):
+        super().__init__(id_year, income, r_to_r, r_to_r_industry)
+        self.income = income
+        self.r_to_r = r_to_r
+        self.r_to_r_industry = r_to_r_industry
