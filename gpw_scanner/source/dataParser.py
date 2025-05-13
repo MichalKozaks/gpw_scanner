@@ -4,10 +4,14 @@ class DataParser:
     def __init__(self, table_name):
         self.table_name = table_name
 
-    def table_finder(self, soup):
+    def rows_table_finder(self, soup):
         table = soup.find("table", self.table_name)
         rows = table.find_all("tr")
         return rows
+
+    def table_finder(self, soup):
+        table = soup.find("table", {'class': f'{self.table_name}'})
+        return table
 
     def fetch_chosen_income(self,rows, income_name):
         counter = 0
@@ -32,3 +36,23 @@ class DataParser:
                         year = match.group(1)
                         years.append(year)
         return years
+
+    def fetch_company_information(self, stock_table):
+        if stock_table is None:
+            print("Error: No table found")
+        else:
+            company_names_collection = []
+            ticker_collection = []
+
+            for row in stock_table.find_all('tr')[1:]:  # skip the header row
+                columns = row.find_all('td')
+                if columns:
+                    company_name = columns[0].text.strip()  # adjust the index based on the column structure
+                    match = re.match(r'^(\w+)\s*\((\w+)\)', company_name)
+                    if match:
+                        ticker = match.group(1).strip()
+                        name = match.group(2).strip()
+                        ticker_collection.append(ticker)
+                        company_names_collection.append(name)
+            #for now I accept two collection as a return results
+            return company_names_collection, ticker_collection

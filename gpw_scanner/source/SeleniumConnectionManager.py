@@ -4,7 +4,7 @@ from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
 import time
 
-class ConnectionManager:
+class SeleniumConnectionManager:
     def __init__(self, url, driver_path):
         self.url = url
         self.driver_path = driver_path
@@ -25,3 +25,4 @@ class ConnectionManager:
         soup = BeautifulSoup(webdriver.page_source, 'html.parser')
         webdriver.quit()
         return soup
+

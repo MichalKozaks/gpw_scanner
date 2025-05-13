@@ -1,7 +1,4 @@
 import re
-
-from cffi.cffi_opcode import PRIM_INT
-
 from source.fdata import IncomeRevenues
 
 class IncomeFabric:
@@ -11,7 +8,6 @@ class IncomeFabric:
     def create_income_collection(self, incomes, years, cls = IncomeRevenues):
         counter = 1  # for this moment is 1(read from second year)
         income_collection = []
-        print("Creating Income Collection")
         for income in incomes:
             # Regular expression to extract value and two percentages
             match = re.match(r"([\d\s]+)r/r([+-]?\d+\.\d+)%~branża([+-]?\d+\.\d+)%", income)
