@@ -4,7 +4,8 @@ from source.company import Company
 from source.SeleniumConnectionManager import SeleniumConnectionManager
 from source.dataParser import DataParser
 from source.fdata import IncomeGrossProfit
-from source.incomeFabric import IncomeFabric
+from source.incomeFactory import IncomeFactory
+
 
 #1.Pobrać liste spólek z gpw jako kolekcja (osobna klasa jakś fetcher)
 #2.Na podstawie listy tworzyć poszczegolne obiekty company(Na początek 3 pierwsze spolki/obiekty company)
@@ -24,12 +25,10 @@ SeleniumConnection = SeleniumConnectionManager(stock_url, service)
 driver = SeleniumConnection.start_selenium_connection()
 soup = SeleniumConnection.start_parse(driver)
 
-
 stock_parser = DataParser("table table--accent-header table--accent-first table--even table--nowrap table--sticky-first-col table--sticky-header")
 stock_table = stock_parser.table_finder(soup)
 
 company_name_collection , company_ticker_collection = stock_parser.fetch_company_information(stock_table)
-
 
 #### Working fine section for INCOME
 company_name = company_name_collection[0]
@@ -45,25 +44,23 @@ rows = parser.rows_table_finder(soup)
 
 IncomeRevenuesData = parser.fetch_chosen_income(rows, "Przychody ze sprzedaży")
 IncomeGrossProfitData = parser.fetch_chosen_income(rows, "Zysk ze sprzedaży")
-Years = parser.fetch_report_years(rows)
-new_income = IncomeFabric()
+Years = parser.fetch_report_years(rows) #Wszystkie lata zostały poprawnie dodane od 2004 do 2024
+new_income = IncomeFactory()
 Income_revenues_collection = new_income.create_income_collection(IncomeRevenuesData, Years)
 Income_Gross_Profit_collection = new_income.create_income_collection(IncomeGrossProfitData, Years, IncomeGrossProfit)
 
 #Company creation test
-#ToDO - some fabirc needed
+#ToDO - some factory needed
 CompanyNo1 = Company(company_name_collection[0] , company_ticker_collection[0], Income_revenues_collection, Income_Gross_Profit_collection)
 
+print(f"Ticker {CompanyNo1.ticker}")
+print(f"Name {CompanyNo1.name}")
+
 all_income = 0
-for income in CompanyNo1.income_revenue:
-    all_income += income.income
-    print(f" {income.id_year}, {income.income}, {income.r_to_r}, {income.r_to_r_industry}") ## ToDo: verify the results seem to be incomplete
+for elements in CompanyNo1.income_revenue:
+   all_income += int(elements.income)
+   print(f"data: {elements.id_year} {elements.income} {elements.r_to_r} {elements.r_to_r_industry}") ## ToDo: verify the results seem to be incomplete
 
-#Przydatny githaab do sprawdzenia:
+print(f"Income: {all_income}")
+#helpfull link:
 #https://github.com/lebinho/biznesradar/blob/main/biznesradar_stock_analysis.ipynb
-
-#ToDO
-#Bardzo podstawowa funkcjonalność:
-#1)dokonać operacji (obliczenie sredniej przychodów liczba i % w wybranym okresie (5 lub 10 lub wiecej lat)
-
-

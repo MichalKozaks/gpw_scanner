@@ -20,7 +20,8 @@ class DataParser:
             if income_name in row.text:
                 values = [td.get_text(strip=True) for td in row.find_all("td")]
                 for value in values:
-                    incomes.append(value)
+                    if income_name not in value:
+                        incomes.append(value)
                 counter += 1
                 break
         return incomes
@@ -54,5 +55,4 @@ class DataParser:
                         name = match.group(2).strip()
                         ticker_collection.append(ticker)
                         company_names_collection.append(name)
-            #for now I accept two collection as a return results
             return company_names_collection, ticker_collection
