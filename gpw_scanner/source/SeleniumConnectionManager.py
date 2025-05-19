@@ -1,3 +1,5 @@
+from time import sleep
+
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
@@ -15,7 +17,9 @@ class SeleniumConnectionManager:
         service = Service(driver_path=self.driver_path)
         driver = webdriver.Chrome(service=service, options=options)
         driver.get(self.url)
-        time.sleep(3) #time to load a page
+        quarterly_url = f"{driver.current_url},Q"
+        print("Current url: ",  quarterly_url)
+        driver.get(quarterly_url)
         return driver
 
     def end_selenium_connection(self, webdriver):

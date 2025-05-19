@@ -1,5 +1,5 @@
 class Company:
-    def __init__(self, name, ticker, income_revenue, income_gross_profit):
+    def __init__(self, ticker, name, income_revenue, income_gross_profit):
         self.name = name
         self.ticker = ticker
         self.income_revenue = income_revenue
