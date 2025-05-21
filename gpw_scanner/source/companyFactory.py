@@ -1,3 +1,5 @@
+from numpy.matlib import empty
+
 from source.company import Company
 from selenium.webdriver.chrome.service import Service
 
@@ -16,7 +18,7 @@ class CompanyFactory:
         Company_collection = []
         count = 0 #temporary solution for restrict amount of company
         for company_ticker in company_ticker_collection:
-            if count < 3:
+            if count < 6:
                 company_url = f"https://www.biznesradar.pl/raporty-finansowe-rachunek-zyskow-i-strat/{company_ticker},Q"
                 service = Service('C:\\chromium-browser\\chromedriver.exe')
                 selenium_connection = SeleniumConnectionManager(company_url, service)
@@ -28,6 +30,8 @@ class CompanyFactory:
 
                 income_revenues_data = parser.fetch_chosen_income(rows, "Przychody ze sprzedaży")
                 income_gross_profit_data = parser.fetch_chosen_income(rows, "Zysk ze sprzedaży")
+                if not income_revenues_data: #ToDO: To change in the future. Temporary solution because Bank sector have other financial data
+                    continue
                 years_collection = parser.fetch_report_years(rows)
                 new_income = IncomeFactory()
                 income_revenues_collection = new_income.create_income_collection(income_revenues_data, years_collection)
