@@ -1,12 +1,10 @@
-from numpy.matlib import empty
-
-from source.company import Company
 from selenium.webdriver.chrome.service import Service
 
 from source.company import Company
 from source.SeleniumConnectionManager import SeleniumConnectionManager
 from source.dataParser import DataParser
-from source.fdata import IncomeGrossProfit
+from source.fdata import IncomeGrossProfit, IncomeNetProfit
+from source.fdata import IncomeEBIT
 from source.incomeFactory import IncomeFactory
 
 
@@ -27,19 +25,20 @@ class CompanyFactory:
                 # create a Parser
                 parser = DataParser("report-table")
                 rows = parser.rows_table_finder(soup)
-
-                income_revenues_data = parser.fetch_chosen_income(rows, "Przychody ze sprzedaży")
-                income_gross_profit_data = parser.fetch_chosen_income(rows, "Zysk ze sprzedaży")
-                if not income_revenues_data: #ToDO: To change in the future. Temporary solution because Bank sector have other financial data
-                    continue
+                income_revenues = parser.fetch_chosen_income(rows, "Przychody ze sprzedaży")
+                income_gross_profit = parser.fetch_chosen_income(rows, "Zysk ze sprzedaży")
+                income_EBIT = parser.fetch_chosen_income(rows, "Zysk operacyjny (EBIT)")
+                income_net_profit = parser.fetch_chosen_income(rows, "Zysk netto")
                 years_collection = parser.fetch_report_years(rows)
                 new_income = IncomeFactory()
-                income_revenues_collection = new_income.create_income_collection(income_revenues_data, years_collection)
-                income_gross_profit_collection = new_income.create_income_collection(income_gross_profit_data, years_collection,
+                income_revenues_collection = new_income.create_income_collection(income_revenues, years_collection)
+                income_gross_profit_collection = new_income.create_income_collection(income_gross_profit, years_collection,
                                                                                  IncomeGrossProfit)
+                income_EBIT_collection = new_income.create_income_collection(income_EBIT, years_collection, IncomeEBIT)
+                income_net_profit_collection = new_income.create_income_collection(income_net_profit, years_collection, IncomeNetProfit)
                 new_company = f"{company_ticker}"
                 new_company = Company(company_ticker, company_name_collection[count], income_revenues_collection,
-                                  income_gross_profit_collection)
+                                  income_gross_profit_collection, income_EBIT_collection, income_net_profit_collection)
                 Company_collection.append(new_company)
                 count += 1
 

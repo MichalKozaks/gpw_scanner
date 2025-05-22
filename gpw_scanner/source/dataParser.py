@@ -48,8 +48,12 @@ class DataParser:
             for row in stock_table.find_all('tr')[1:]:  # skip the header row
                 columns = row.find_all('td')
                 if columns:
-                    company_name = columns[0].text.strip()  # adjust the index based on the column structure
+                    company_name = columns[0].text.strip()
+                    link = columns[0].find('a')
+                    title = link['title'].strip().upper()
                     match = re.match(r'^(\w+)\s*\((\w+)\)', company_name)
+                    if "BANK" in title or "MBANK" in title:  #Exclude bank sector because  have other financial stats
+                        continue
                     if match:
                         ticker = match.group(1).strip()
                         name = match.group(2).strip()

@@ -13,25 +13,31 @@ class Report:
         score = income_data * weight
         return score
 
+    def calculate_score(self, value, weight):
+        if value is not None:
+            try:
+                converted = self.normalize_number(value)
+                return self.get_score(converted, weight)
+            except Exception:
+                return 0  # Optionally log the error
+        return 0
+
     def get_report(self, company_collection):
         ranking = []
         for company in company_collection:
-            all_scores = 0
+            scoring = 0
             income_revenues_r_r = company.income_revenue[-1].r_to_r
             income_gross_profit_r_r = company.income_gross_profit[-1].r_to_r
-            if income_revenues_r_r and income_revenues_r_r is not None:
-                income_revenue_converted = self.normalize_number(income_revenues_r_r)
-                score = self.get_score(income_revenue_converted, 0.5)
-            else:
-                score = 0
-            if income_gross_profit_r_r and income_gross_profit_r_r is not None:
-                income_gross_profit_converted = self.normalize_number(income_gross_profit_r_r)
-                score2 = self.get_score(income_gross_profit_converted, 0.5)
-            else:
-                score2 = 0
+            income_EBIT_r_r = company.income_EBIT[-1].r_to_r
+            income_net_profit_r_r = company.income_net_profit[-1].r_to_r
+            revenue_score = self.calculate_score(income_revenues_r_r, 0.2)
+            gross_score = self.calculate_score(income_gross_profit_r_r, 0.2)
+            ebit_score = self.calculate_score(income_EBIT_r_r, 0.3)
+            net_score = self.calculate_score(income_net_profit_r_r, 0.3)
 
-            all_scores += score + score2
-            new_entity = RankPosition(all_scores, company.name, company.ticker, income_revenues_r_r,
-                                      income_gross_profit_r_r)
+
+            scoring += revenue_score + gross_score + ebit_score + net_score
+            new_entity = RankPosition(format(scoring, '.2f'), company.name, company.ticker, income_revenues_r_r,
+                                      income_gross_profit_r_r, income_EBIT_r_r, income_net_profit_r_r,)
             ranking.append(new_entity)
         return ranking

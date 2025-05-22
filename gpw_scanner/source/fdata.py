@@ -21,3 +21,19 @@ class IncomeGrossProfit(FinancialData):
         self.income = income
         self.r_to_r = r_to_r
         self.r_to_r_industry = r_to_r_industry
+
+#Zysk operacyjny (EBIT)
+class IncomeEBIT(FinancialData):
+    def __init__(self, id_year, income, r_to_r, r_to_r_industry):
+        super().__init__(id_year, income, r_to_r, r_to_r_industry)
+        self.income = income
+        self.r_to_r = r_to_r
+        self.r_to_r_industry = r_to_r_industry
+
+#Zysk Netto
+class IncomeNetProfit(FinancialData):
+    def __init__(self, id_year, income, r_to_r, r_to_r_industry):
+        super().__init__(id_year, income, r_to_r, r_to_r_industry)
+        self.income = income
+        self.r_to_r = r_to_r
+        self.r_to_r_industry = r_to_r_industry
