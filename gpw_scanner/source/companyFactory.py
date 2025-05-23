@@ -14,10 +14,11 @@ class CompanyFactory:
 
     def create_company_collection(self, company_ticker_collection, company_name_collection):
         Company_collection = []
+        #amount = len(company_ticker_collection)
         count = 0 #temporary solution for restrict amount of company
         for company_ticker in company_ticker_collection:
-            if count < 6:
-                company_url = f"https://www.biznesradar.pl/raporty-finansowe-rachunek-zyskow-i-strat/{company_ticker},Q"
+            if count < 4 :
+                company_url = f"https://www.biznesradar.pl/raporty-finansowe-rachunek-zyskow-i-strat/{company_ticker},Q"   #ToDO: Consider try catch for 404 html
                 service = Service('C:\\chromium-browser\\chromedriver.exe')
                 selenium_connection = SeleniumConnectionManager(company_url, service)
                 driver = selenium_connection.start_selenium_connection()
@@ -25,7 +26,7 @@ class CompanyFactory:
                 # create a Parser
                 parser = DataParser("report-table")
                 rows = parser.rows_table_finder(soup)
-                income_revenues = parser.fetch_chosen_income(rows, "Przychody ze sprzedaży")
+                income_revenues = parser.fetch_chosen_income(rows, "Przychody ze sprzedaży") #ToDO consider try/catch that can help return the company with wrong stats(example bank)
                 income_gross_profit = parser.fetch_chosen_income(rows, "Zysk ze sprzedaży")
                 income_EBIT = parser.fetch_chosen_income(rows, "Zysk operacyjny (EBIT)")
                 income_net_profit = parser.fetch_chosen_income(rows, "Zysk netto")

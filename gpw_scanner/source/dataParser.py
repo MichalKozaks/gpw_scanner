@@ -52,7 +52,7 @@ class DataParser:
                     link = columns[0].find('a')
                     title = link['title'].strip().upper()
                     match = re.match(r'^(\w+)\s*\((\w+)\)', company_name)
-                    if "BANK" in title or "MBANK" in title:  #Exclude bank sector because  have other financial stats
+                    if "BANK" in title or "MBANK" in title or "GETIN" in title or "SANTANDER" in title or "UNICREDIT" in title:  #Exclude bank sector because have other financial stats. We need to do this here because create_company_collection() require pure list of company - any try catch have no sense there ... because new company instance will have wrong parse date that lead to wrong stats for company
                         continue
                     if match:
                         ticker = match.group(1).strip()

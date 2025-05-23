@@ -19,8 +19,4 @@ CompanyFactory = CompanyFactory()
 Company_collection = CompanyFactory.create_company_collection(company_ticker_collection, company_name_collection)
 
 ranking = Report()
-ranking.get_report(Company_collection)
-ranking = sorted(ranking.get_report(Company_collection), key=lambda rank: rank.points)
-print("Sorted collection number of element:", len(ranking))
-for rank in ranking:
-   print(f"Points: {rank.points} Company: {rank.company_name} Ticker: {rank.company_ticker} Przychody ze sprzedaży r/r: {rank.income_revenues_r_r} Zysk ze sprzedaży r/r {rank.income_gross_profit_r_r} Zysk operacyjny (EBIT): {rank.income_EBIT_r_r} Zysk Netto: {rank.income_net_profit_r_r} ")
+ranking.export_to_csv(ranking.get_report(Company_collection))
