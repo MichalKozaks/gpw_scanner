@@ -1,4 +1,4 @@
-import pandas as pd
+from datetime import date
 import csv
 
 from source.rankPosition import RankPosition
@@ -41,39 +41,53 @@ class Report:
         ranking = []
         for company in company_collection:
             scoring = 0
+            share_price = company.share_price
             income_revenues_r_r = company.income_revenue[-1].r_to_r
+            income_revenues_r_to_r_industry = company.income_revenue[-1].r_to_r_industry
             income_gross_profit_r_r = company.income_gross_profit[-1].r_to_r
+            income_gross_profit_r_r_industry = company.income_gross_profit[-1].r_to_r_industry
             income_EBIT_r_r = company.income_EBIT[-1].r_to_r
+            income_EBIT_r_r_industry = company.income_EBIT[-1].r_to_r_industry
             income_net_profit_r_r = company.income_net_profit[-1].r_to_r
+            income_net_profit_r_r_industry = company.income_net_profit[-1].r_to_r_industry
+            share_amount = company.share_amount
+            print("SHARE AMOUNT:" , share_amount)
+
             revenue_score = self.calculate_score(income_revenues_r_r)
             gross_score = self.calculate_score(income_gross_profit_r_r)
             ebit_score = self.calculate_score(income_EBIT_r_r)
             net_score = self.calculate_score(income_net_profit_r_r,)
             if revenue_score > 0 and gross_score > 0 and ebit_score > 0 and income_EBIT_r_r and net_score >0:
                 scoring += revenue_score + gross_score + ebit_score + net_score + 50
-                print("+50 bonus for all positive stats")
             else:
                 scoring += revenue_score + gross_score + ebit_score + net_score
-            new_entity = RankPosition(format(scoring, '.2f'), company.name, company.ticker, income_revenues_r_r,
-                                      income_gross_profit_r_r, income_EBIT_r_r, income_net_profit_r_r,)
+            new_entity = RankPosition(format(scoring, '.2f'), company.name, company.ticker, share_price, income_revenues_r_r, income_revenues_r_to_r_industry,
+                                      income_gross_profit_r_r, income_gross_profit_r_r_industry, income_EBIT_r_r, income_EBIT_r_r_industry, income_net_profit_r_r, income_net_profit_r_r_industry)
             ranking.append(new_entity)
         return ranking
 
     def export_to_csv(self, ranking):
+        report_date = date.today()
         sorted_ranking =sorted(ranking, key=lambda rank: float(rank.points), reverse=True)
-        file = open("C:\\gpw_scanner\\gpw_scanner\\resources\\gpw_report.csv", mode="w", newline="", encoding="utf-8")
-        writer = csv.DictWriter(file, fieldnames=["Points", "Company", "Ticker", "Przychody ze sprzedazy r/r",
-                                                      "Zysk ze sprzedaży r/r", "Zysk operacyjny (EBIT)", "Zysk Netto"])
+        file = open(f"C:\\gpw_scanner\\gpw_scanner\\resources\\gpw_report_{report_date}.csv", mode="w", newline="", encoding="utf-8")
+        writer = csv.DictWriter(file, fieldnames=["Points", "Company", "Ticker", "Cena akcji", "Przychody ze sprzedazy r/r", "Przychody ze sprzedazy branza r/r",
+                                                      "Zysk ze sprzedazy r/r","Zysk ze sprzedazy branza r/r" , "Zysk operacyjny (EBIT)", "Zysk operacyjny branza (EBIT)", "Zysk Netto", "Zysk Netto branza"])
         writer.writeheader()
         for rank in sorted_ranking:
-            print(f"Points: {rank.points} Company: {rank.company_name} Ticker: {rank.company_ticker} Przychody ze sprzedaży r/r: {rank.income_revenues_r_r} Zysk ze sprzedaży r/r {rank.income_gross_profit_r_r} Zysk operacyjny (EBIT): {rank.income_EBIT_r_r} Zysk Netto: {rank.income_net_profit_r_r} ")
+            #print(f"Points: {rank.points} Company: {rank.company_name} Ticker: {rank.company_ticker} Przychody ze sprzedaży r/r: {rank.income_revenues_r_r} Zysk ze sprzedaży r/r {rank.income_gross_profit_r_r} Zysk operacyjny (EBIT): {rank.income_EBIT_r_r} Zysk Netto: {rank.income_net_profit_r_r} ")
             writer.writerow({
                 "Points": rank.points,
                 "Company": rank.company_name,
                 "Ticker": rank.company_ticker,
+                "Cena akcji": rank.share_price,
                 "Przychody ze sprzedazy r/r": rank.income_revenues_r_r,
-                "Zysk ze sprzedaży r/r": rank.income_gross_profit_r_r,
+                "Przychody ze sprzedazy branza r/r": rank.income_revenues_r_to_r_industry,
+                "Zysk ze sprzedazy r/r": rank.income_gross_profit_r_r,
+                "Zysk ze sprzedazy branza r/r": rank.income_gross_profit_r_to_r_industry,
                 "Zysk operacyjny (EBIT)": rank.income_EBIT_r_r,
-                "Zysk Netto": rank.income_net_profit_r_r
+                "Zysk operacyjny branza (EBIT)": rank.income_EBIT_r_r_industry,
+                "Zysk Netto": rank.income_net_profit_r_r,
+                "Zysk Netto branza": rank.income_net_profit_r_r_industry
+
             })
-        print("The cvs report is prepared with successfully !")
+        print("The cvs report was successfully created!")

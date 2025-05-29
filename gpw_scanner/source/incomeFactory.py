@@ -1,5 +1,5 @@
 import re
-from source.fdata import IncomeRevenues
+from source.financialData import IncomeRevenues
 
 class IncomeFactory:
     def __init__(self):

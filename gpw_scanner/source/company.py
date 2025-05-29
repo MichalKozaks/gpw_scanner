@@ -1,11 +1,13 @@
 class Company:
-    def __init__(self, ticker, name, income_revenue, income_gross_profit, income_EBIT, income_net_profit):
+    def __init__(self, ticker, name, share_price, income_revenue, income_gross_profit, income_EBIT, income_net_profit, share_amount):
         self.name = name
         self.ticker = ticker
+        self.share_price = share_price
         self.income_revenue = income_revenue
         self.income_gross_profit = income_gross_profit
         self.income_EBIT = income_EBIT
         self.income_net_profit = income_net_profit
+        self.share_amount = share_amount
 
 
     def display_info(self):

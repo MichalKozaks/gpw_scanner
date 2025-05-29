@@ -9,7 +9,7 @@ service = Service('C:\\chromium-browser\\chromedriver.exe')
 SeleniumConnection = SeleniumConnectionManager(stock_url, service)
 driver = SeleniumConnection.start_selenium_connection()
 soup = SeleniumConnection.start_parse(driver)
-
+print("Analyse has been started")
 stock_parser = DataParser("table table--accent-header table--accent-first table--even table--nowrap table--sticky-first-col table--sticky-header")
 stock_table = stock_parser.table_finder(soup)
 

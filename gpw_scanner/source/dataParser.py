@@ -13,6 +13,18 @@ class DataParser:
         table = soup.find("table", {'class': f'{self.table_name}'})
         return table
 
+    def get_share_price(self, soup):
+        price_span = soup.find('span', class_='q_ch_act')
+        share_price = float(price_span.text) if price_span else None
+        return share_price
+
+    def get_newest_share_amount(self, soup):
+        share_amount_row = soup.find('tr', attrs={'data-field': 'ShareAmount'})
+        value_cell = share_amount_row.find('td', class_='h newest') if share_amount_row else None
+        share_amount = value_cell.find('span', class_='pv').find('span').text if value_cell else None
+        print("share amount:", share_amount)
+        return share_amount
+
     def fetch_chosen_income(self,rows, income_name):
         counter = 0
         incomes = []

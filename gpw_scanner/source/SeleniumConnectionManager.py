@@ -16,7 +16,7 @@ class SeleniumConnectionManager:
         driver = webdriver.Chrome(service=service, options=options)
         driver.get(self.url)
         quarterly_url = f"{driver.current_url},Q"
-        print("Current url: ",  quarterly_url)
+        print(quarterly_url)
         driver.get(quarterly_url)
         return driver
 
@@ -28,3 +28,7 @@ class SeleniumConnectionManager:
         webdriver.quit()
         return soup
 
+    def get_soup_for_chosen_indicator(self,selenium_connection, service):
+        driver = selenium_connection.start_selenium_connection()
+        soup = selenium_connection.start_parse(driver)
+        return soup
