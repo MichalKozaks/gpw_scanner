@@ -22,7 +22,6 @@ class DataParser:
         share_amount_row = soup.find('tr', attrs={'data-field': 'ShareAmount'})
         value_cell = share_amount_row.find('td', class_='h newest') if share_amount_row else None
         share_amount = value_cell.find('span', class_='pv').find('span').text if value_cell else None
-        print("share amount:", share_amount)
         return share_amount
 
     def fetch_chosen_income(self,rows, income_name):

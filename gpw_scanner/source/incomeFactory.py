@@ -1,4 +1,5 @@
 import re
+
 from source.financialData import IncomeRevenues
 
 class IncomeFactory:
