@@ -1,8 +1,8 @@
 
 class FinancialData:
-    def __init__(self, id_year, f_data, year_to_year, year_to_year_trade):
+    def __init__(self, id_year, financial_data, year_to_year, year_to_year_trade):
         self.id_year = id_year
-        self.f_data = f_data
+        self.financial_data = financial_data
         self.year_to_year = year_to_year
         self.year_to_year_trade = year_to_year_trade
 
@@ -37,3 +37,15 @@ class IncomeNetProfit(FinancialData):
         self.income = income
         self.r_to_r = r_to_r
         self.r_to_r_industry = r_to_r_industry
+
+
+class PriceToEarningsRatio(FinancialData):
+    def __init__(self, id_year, income, r_to_r, r_to_r_industry):
+        super().__init__(id_year, income, r_to_r, r_to_r_industry)
+        self.income = income
+        self.r_to_r = r_to_r
+        self.r_to_r_industry = r_to_r_industry
+
+#ToDO
+#refactor r_to_r to yearOverYearChange
+#and other refactorization

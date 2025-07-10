@@ -1,5 +1,5 @@
 class Company:
-    def __init__(self, ticker, name, share_price, income_revenue_collection, income_gross_profit_collection, income_EBIT_collection, income_net_profit_collection, share_amount):
+    def __init__(self, ticker, name, share_price, income_revenue_collection, income_gross_profit_collection, income_EBIT_collection, income_net_profit_collection, share_amount, price_to_earnings_ratio_collection):
         self.name = name
         self.ticker = ticker
         self.share_price = share_price
@@ -8,6 +8,7 @@ class Company:
         self.income_EBIT = income_EBIT_collection
         self.income_net_profit_collection = income_net_profit_collection
         self.share_amount = share_amount
+        self.price_to_earnings_collection = price_to_earnings_ratio_collection
 
     def display_info(self):
         print(self.name)

@@ -1,5 +1,8 @@
 from datetime import date
 import csv
+
+from numpy.ma.extras import average
+
 from source.rankPosition import RankPosition
 
 class Report:
@@ -28,6 +31,19 @@ class Report:
     def calculate_PE(self, share_price, eps):
         pe = share_price/eps
         return pe
+
+    def calculate_avg_value(self, collection):
+        total = 0
+        number_of_elements = len(collection)
+
+        if number_of_elements == 0:
+            return 0
+
+        for value in collection:
+            total += int(value)
+
+        avg = total / number_of_elements
+        return avg
 
     def calculate_score(self, value):
         if value is not None:
@@ -65,6 +81,12 @@ class Report:
             income_net_profit_r_r = company.income_net_profit_collection[-1].r_to_r
             income_net_profit_r_r_industry = company.income_net_profit_collection[-1].r_to_r_industry
             share_amount = int(company.share_amount.replace(" ", ""))
+            price_to_earnings_collection = []
+            for pe in company.price_to_earnings_collection:
+                price_to_earnings_collection.append(pe.income)
+
+            price_to_earnings_ratio_avr = self.calculate_avg_value(price_to_earnings_collection)
+
             income_net_collection = []
             for net in company.income_net_profit_collection:
                 income_net_collection.append(net.income)
@@ -81,7 +103,7 @@ class Report:
                 scoring += revenue_score + gross_score + ebit_score + net_score + 50
             else:
                 scoring += revenue_score + gross_score + ebit_score + net_score
-            new_entity = RankPosition(format(scoring, '.2f'), company.name, company.ticker, share_price, eps, pe, income_revenues_r_r, income_revenues_r_to_r_industry,
+            new_entity = RankPosition(format(scoring, '.2f'), company.name, company.ticker, share_price, eps, pe, price_to_earnings_ratio_avr, income_revenues_r_r, income_revenues_r_to_r_industry,
                                       income_gross_profit_r_r, income_gross_profit_r_r_industry, income_EBIT_r_r, income_EBIT_r_r_industry, income_net_profit_r_r, income_net_profit_r_r_industry)
             ranking.append(new_entity)
         return ranking
@@ -90,8 +112,8 @@ class Report:
         report_date = date.today()
         sorted_ranking =sorted(ranking, key=lambda rank: float(rank.points), reverse=True)
         file = open(f"C:\\gpw_scanner\\gpw_scanner\\resources\\gpw_report_{report_date}.csv", mode="w", newline="", encoding="utf-8")
-        writer = csv.DictWriter(file, fieldnames=["Points", "Company", "Ticker", "Cena akcji", "Zysk na akcje(EPS)", "Cena do Zysku(PE)", "Przychody ze sprzedazy r/r", "Przychody ze sprzedazy branza r/r",
-                                                      "Zysk ze sprzedazy r/r","Zysk ze sprzedazy branza r/r" , "Zysk operacyjny (EBIT)", "Zysk operacyjny branza (EBIT)", "Zysk Netto", "Zysk Netto branza"])
+        writer = csv.DictWriter(file, fieldnames=["Points", "Company", "Ticker", "Cena akcji", "Zysk na akcje(EPS)", "Cena do Zysku(PE)","Srednia wartosc Cena do Zysku na przestrzeni lat", "Przychody ze sprzedazy [%] r/r", "Przychody ze sprzedazy branza [%] r/r",
+                                                      "Zysk ze sprzedazy [%] r/r","Zysk ze sprzedazy branza [%] r/r" , "Zysk operacyjny [%] (EBIT)", "Zysk operacyjny branza [%] (EBIT)", "Zysk Netto [%]", "Zysk Netto branza [%]"])
         writer.writeheader()
         for rank in sorted_ranking:
             writer.writerow({
@@ -101,14 +123,15 @@ class Report:
                 "Cena akcji": rank.share_price,
                 "Zysk na akcje(EPS)": rank.eps,
                 "Cena do Zysku(PE)": rank.pe,
-                "Przychody ze sprzedazy r/r": rank.income_revenues_r_r,
-                "Przychody ze sprzedazy branza r/r": rank.income_revenues_r_to_r_industry,
-                "Zysk ze sprzedazy r/r": rank.income_gross_profit_r_r,
-                "Zysk ze sprzedazy branza r/r": rank.income_gross_profit_r_to_r_industry,
-                "Zysk operacyjny (EBIT)": rank.income_EBIT_r_r,
-                "Zysk operacyjny branza (EBIT)": rank.income_EBIT_r_r_industry,
-                "Zysk Netto": rank.income_net_profit_r_r,
-                "Zysk Netto branza": rank.income_net_profit_r_r_industry
+                "Srednia wartosc Cena do Zysku na przestrzeni lat": rank.avr_pe,
+                "Przychody ze sprzedazy [%] r/r": rank.income_revenues_r_r,
+                "Przychody ze sprzedazy branza [%] r/r": rank.income_revenues_r_to_r_industry,
+                "Zysk ze sprzedazy [%] r/r": rank.income_gross_profit_r_r,
+                "Zysk ze sprzedazy branza [%] r/r": rank.income_gross_profit_r_to_r_industry,
+                "Zysk operacyjny [%] (EBIT)": rank.income_EBIT_r_r,
+                "Zysk operacyjny branza [%] (EBIT)": rank.income_EBIT_r_r_industry,
+                "Zysk Netto [%]": rank.income_net_profit_r_r,
+                "Zysk Netto branza [%]": rank.income_net_profit_r_r_industry
 
             })
         print("The cvs report was successfully created!")
