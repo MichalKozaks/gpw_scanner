@@ -72,14 +72,14 @@ class Report:
         for company in company_collection:
             scoring = 0
             share_price = company.share_price
-            income_revenues_r_r = company.income_revenue[-1].r_to_r
-            income_revenues_r_to_r_industry = company.income_revenue[-1].r_to_r_industry
-            income_gross_profit_r_r = company.income_gross_profit[-1].r_to_r
-            income_gross_profit_r_r_industry = company.income_gross_profit[-1].r_to_r_industry
-            income_EBIT_r_r = company.income_EBIT[-1].r_to_r
-            income_EBIT_r_r_industry = company.income_EBIT[-1].r_to_r_industry
-            income_net_profit_r_r = company.income_net_profit_collection[-1].r_to_r
-            income_net_profit_r_r_industry = company.income_net_profit_collection[-1].r_to_r_industry
+            yearly_income_revenues = company.income_revenue[-1].yearly_growth_pct
+            yearly_income_revenues_industry = company.income_revenue[-1].yearly_growth_Industry_pct
+            yearly_income_gross_profit = company.income_gross_profit[-1].yearly_growth_pct
+            yearly_income_gross_profit_industry = company.income_gross_profit[-1].yearly_growth_Industry_pct
+            yearly_income_EBIT = company.income_EBIT[-1].yearly_growth_pct
+            yearly_income_EBIT_industry = company.income_EBIT[-1].yearly_growth_Industry_pct
+            yearly_income_net_profit = company.income_net_profit_collection[-1].yearly_growth_pct
+            yearly_income_net_profit_industry = company.income_net_profit_collection[-1].yearly_growth_Industry_pct
             share_amount = int(company.share_amount.replace(" ", ""))
             price_to_earnings_collection = []
             for pe in company.price_to_earnings_collection:
@@ -95,16 +95,16 @@ class Report:
             eps = self.calculate_EPS(quarterly_sum_of_net_profit, share_amount)
             pe = self.calculate_PE(share_price, eps)
 
-            revenue_score = self.calculate_score(income_revenues_r_r)
-            gross_score = self.calculate_score(income_gross_profit_r_r)
-            ebit_score = self.calculate_score(income_EBIT_r_r)
-            net_score = self.calculate_score(income_net_profit_r_r,)
-            if revenue_score > 0 and gross_score > 0 and ebit_score > 0 and income_EBIT_r_r and net_score >0:
+            revenue_score = self.calculate_score(yearly_income_revenues)
+            gross_score = self.calculate_score(yearly_income_gross_profit)
+            ebit_score = self.calculate_score(yearly_income_EBIT)
+            net_score = self.calculate_score(yearly_income_net_profit,)
+            if revenue_score > 0 and gross_score > 0 and ebit_score > 0 and yearly_income_EBIT and net_score >0:
                 scoring += revenue_score + gross_score + ebit_score + net_score + 50
             else:
                 scoring += revenue_score + gross_score + ebit_score + net_score
-            new_entity = RankPosition(format(scoring, '.2f'), company.name, company.ticker, share_price, eps, pe, price_to_earnings_ratio_avr, income_revenues_r_r, income_revenues_r_to_r_industry,
-                                      income_gross_profit_r_r, income_gross_profit_r_r_industry, income_EBIT_r_r, income_EBIT_r_r_industry, income_net_profit_r_r, income_net_profit_r_r_industry)
+            new_entity = RankPosition(format(scoring, '.2f'), company.name, company.ticker, share_price, eps, pe, price_to_earnings_ratio_avr, yearly_income_revenues, yearly_income_revenues_industry,
+                                      yearly_income_gross_profit, yearly_income_gross_profit_industry, yearly_income_EBIT, yearly_income_EBIT_industry, yearly_income_net_profit, yearly_income_net_profit_industry)
             ranking.append(new_entity)
         return ranking
 
@@ -124,14 +124,14 @@ class Report:
                 "Zysk na akcje(EPS)": rank.eps,
                 "Cena do Zysku(PE)": rank.pe,
                 "Srednia wartosc Cena do Zysku na przestrzeni lat": rank.avr_pe,
-                "Przychody ze sprzedazy [%] r/r": rank.income_revenues_r_r,
-                "Przychody ze sprzedazy branza [%] r/r": rank.income_revenues_r_to_r_industry,
-                "Zysk ze sprzedazy [%] r/r": rank.income_gross_profit_r_r,
-                "Zysk ze sprzedazy branza [%] r/r": rank.income_gross_profit_r_to_r_industry,
-                "Zysk operacyjny [%] (EBIT)": rank.income_EBIT_r_r,
-                "Zysk operacyjny branza [%] (EBIT)": rank.income_EBIT_r_r_industry,
-                "Zysk Netto [%]": rank.income_net_profit_r_r,
-                "Zysk Netto branza [%]": rank.income_net_profit_r_r_industry
+                "Przychody ze sprzedazy [%] r/r": rank.yearly_income_revenues,
+                "Przychody ze sprzedazy branza [%] r/r": rank.yearly_income_revenues_industry,
+                "Zysk ze sprzedazy [%] r/r": rank.yearly_income_gross_profit,
+                "Zysk ze sprzedazy branza [%] r/r": rank.yearly_income_gross_profit_industry,
+                "Zysk operacyjny [%] (EBIT)": rank.yearly_income_EBIT,
+                "Zysk operacyjny branza [%] (EBIT)": rank.yearly_income_EBIT_industry,
+                "Zysk Netto [%]": rank.yearly_income_net_profit,
+                "Zysk Netto branza [%]": rank.yearly_income_net_profit_industry
 
             })
         print("The cvs report was successfully created!")

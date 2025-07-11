@@ -1,51 +1,42 @@
 
 class FinancialData:
-    def __init__(self, id_year, financial_data, year_to_year, year_to_year_trade):
+    def __init__(self, id_year, financial_data, yearly_growth_pct, yearly_growth_Industry_pct):
         self.id_year = id_year
         self.financial_data = financial_data
-        self.year_to_year = year_to_year
-        self.year_to_year_trade = year_to_year_trade
-
+        self.yearly_growth_pct = yearly_growth_pct
+        self.yearly_growth_Industry_pct = yearly_growth_Industry_pct
 #Przychody za sprzedazy
 class IncomeRevenues(FinancialData):
-    def __init__(self, id_year, income, r_to_r, r_to_r_industry):
-        super().__init__(id_year, income, r_to_r, r_to_r_industry)
+    def __init__(self, id_year, income, yearly_growth_pct, yearly_growth_Industry_pct):
+        super().__init__(id_year, income, yearly_growth_pct, yearly_growth_Industry_pct)
         self.income = income
-        self.r_to_r = r_to_r
-        self.r_to_r_industry = r_to_r_industry
-
+        self.yearly_growth_pct = yearly_growth_pct
+        self.yearly_growth_Industry_pct = yearly_growth_Industry_pct
 #Zysk ze sprzedaży
 class IncomeGrossProfit(FinancialData):
-    def __init__(self, id_year, income, r_to_r, r_to_r_industry):
-        super().__init__(id_year, income, r_to_r, r_to_r_industry)
+    def __init__(self, id_year, income, yearly_growth_pct, yearly_growth_Industry_pct):
+        super().__init__(id_year, income, yearly_growth_pct, yearly_growth_Industry_pct)
         self.income = income
-        self.r_to_r = r_to_r
-        self.r_to_r_industry = r_to_r_industry
-
+        self.yearly_growth_pct = yearly_growth_pct
+        self.yearly_growth_Industry_pct = yearly_growth_Industry_pct
 #Zysk operacyjny (EBIT)
 class IncomeEBIT(FinancialData):
-    def __init__(self, id_year, income, r_to_r, r_to_r_industry):
-        super().__init__(id_year, income, r_to_r, r_to_r_industry)
+    def __init__(self, id_year, income, yearly_growth_pct, yearly_growth_Industry_pct):
+        super().__init__(id_year, income, yearly_growth_pct, yearly_growth_Industry_pct)
         self.income = income
-        self.r_to_r = r_to_r
-        self.r_to_r_industry = r_to_r_industry
-
+        self.yearly_growth_pct = yearly_growth_pct
+        self.yearly_growth_Industry_pct = yearly_growth_Industry_pct
 #Zysk Netto
 class IncomeNetProfit(FinancialData):
-    def __init__(self, id_year, income, r_to_r, r_to_r_industry):
-        super().__init__(id_year, income, r_to_r, r_to_r_industry)
+    def __init__(self, id_year, income, yearly_growth_pct, yearly_growth_Industry_pct):
+        super().__init__(id_year, income, yearly_growth_pct, yearly_growth_Industry_pct)
         self.income = income
-        self.r_to_r = r_to_r
-        self.r_to_r_industry = r_to_r_industry
-
+        self.yearly_growth_pct = yearly_growth_pct
+        self.yearly_growth_Industry_pct = yearly_growth_Industry_pct
 
 class PriceToEarningsRatio(FinancialData):
-    def __init__(self, id_year, income, r_to_r, r_to_r_industry):
-        super().__init__(id_year, income, r_to_r, r_to_r_industry)
+    def __init__(self, id_year, income, yearly_growth_pct, yearly_growth_Industry_pct):
+        super().__init__(id_year, income, yearly_growth_pct, yearly_growth_Industry_pct)
         self.income = income
-        self.r_to_r = r_to_r
-        self.r_to_r_industry = r_to_r_industry
-
-#ToDO
-#refactor r_to_r to yearOverYearChange
-#and other refactorization
+        self.yearly_growth_pct = yearly_growth_pct
+        self.yearly_growth_Industry_pct = yearly_growth_Industry_pct

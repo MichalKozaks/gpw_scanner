@@ -14,11 +14,6 @@ stock_parser = DataParser("table table--accent-header table--accent-first table-
 stock_table = stock_parser.table_finder(stock_soup)
 
 company_name_collection , company_ticker_collection = stock_parser.fetch_company_information(stock_table)
-for name in company_name_collection:
-    print("company name: ", name)
-
-for ticker in company_ticker_collection:
-    print("ticker: ", ticker)
 
 CompanyFactory = CompanyFactory()
 Company_collection = CompanyFactory.create_company_collection(company_name_collection, company_name_collection)

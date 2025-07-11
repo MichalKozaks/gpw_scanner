@@ -17,8 +17,7 @@ class CompanyFactory:
         company_collection = []
         count = 0 #temporary solution for restrict amount of company
         for company_ticker in company_ticker_collection:
-           # if count < 2 :
-                print(company_ticker)
+            if count < 2 :
                 correct_company_ticker = company_ticker
                 if re.search(r'\([^)]*\)', company_ticker):
                     correct_company_ticker = re.sub(r'\s+\([^)]*\)', '', company_ticker)
