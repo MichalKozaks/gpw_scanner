@@ -32,17 +32,20 @@ class Report:
         pe = share_price/eps
         return pe
 
-    def calculate_avg_value(self, collection):
+    def calculate_avg_value(self, collection, num_of_quartals):
         total = 0
         number_of_elements = len(collection)
 
-        if number_of_elements == 0:
+        if number_of_elements == 0 or number_of_elements < 20:
+            print("Not enough data to calculate average value")
             return 0
-
-        for value in collection:
+#ToDo: safe for company that hasn't 20 quarterrs in idicators history!
+        for value in collection[-num_of_quartals:]:
             total += int(value)
 
-        avg = total / number_of_elements
+        #avg = total / number_of_elements
+        avg = total / num_of_quartals
+
         return avg
 
     def calculate_score(self, value):
@@ -84,8 +87,9 @@ class Report:
             price_to_earnings_collection = []
             for pe in company.price_to_earnings_collection:
                 price_to_earnings_collection.append(pe.income)
+             #   print(pe.income)
 
-            price_to_earnings_ratio_avr = self.calculate_avg_value(price_to_earnings_collection)
+            price_to_earnings_ratio_avr = self.calculate_avg_value(price_to_earnings_collection, 20)
 
             income_net_collection = []
             for net in company.income_net_profit_collection:
@@ -112,7 +116,7 @@ class Report:
         report_date = date.today()
         sorted_ranking =sorted(ranking, key=lambda rank: float(rank.points), reverse=True)
         file = open(f"C:\\gpw_scanner\\gpw_scanner\\resources\\gpw_report_{report_date}.csv", mode="w", newline="", encoding="utf-8")
-        writer = csv.DictWriter(file, fieldnames=["Points", "Company", "Ticker", "Cena akcji", "Zysk na akcje(EPS)", "Cena do Zysku(PE)","Srednia wartosc Cena do Zysku na przestrzeni lat", "Przychody ze sprzedazy [%] r/r", "Przychody ze sprzedazy branza [%] r/r",
+        writer = csv.DictWriter(file, fieldnames=["Points", "Company", "Ticker", "Cena akcji", "Zysk na akcje(EPS)", "Cena do Zysku(PE)","Srednia wartosc Cena do Zysku dla 5-ciu lat", "Przychody ze sprzedazy [%] r/r", "Przychody ze sprzedazy branza [%] r/r",
                                                       "Zysk ze sprzedazy [%] r/r","Zysk ze sprzedazy branza [%] r/r" , "Zysk operacyjny [%] (EBIT)", "Zysk operacyjny branza [%] (EBIT)", "Zysk Netto [%]", "Zysk Netto branza [%]"])
         writer.writeheader()
         for rank in sorted_ranking:
@@ -123,7 +127,7 @@ class Report:
                 "Cena akcji": rank.share_price,
                 "Zysk na akcje(EPS)": rank.eps,
                 "Cena do Zysku(PE)": rank.pe,
-                "Srednia wartosc Cena do Zysku na przestrzeni lat": rank.avr_pe,
+                "Srednia wartosc Cena do Zysku dla 5-ciu lat": rank.avr_pe,
                 "Przychody ze sprzedazy [%] r/r": rank.yearly_income_revenues,
                 "Przychody ze sprzedazy branza [%] r/r": rank.yearly_income_revenues_industry,
                 "Zysk ze sprzedazy [%] r/r": rank.yearly_income_gross_profit,

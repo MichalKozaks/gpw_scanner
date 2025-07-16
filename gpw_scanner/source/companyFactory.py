@@ -1,7 +1,7 @@
 import re
 
 import requests
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, element
 from source.company import Company
 from source.connectionManager import ConnectionManager
 from source.dataParser import DataParser
@@ -17,7 +17,7 @@ class CompanyFactory:
         company_collection = []
         count = 0 #temporary solution for restrict amount of company
         for company_ticker in company_ticker_collection:
-            if count < 2 :
+        #   if count < 30 :
                 correct_company_ticker = company_ticker
                 if re.search(r'\([^)]*\)', company_ticker):
                     correct_company_ticker = re.sub(r'\s+\([^)]*\)', '', company_ticker)
@@ -47,12 +47,19 @@ class CompanyFactory:
                 years_collection = financial_parser.fetch_report_years(financial_rows)
                 new_income = IncomeFactory()
                 income_revenues_collection = new_income.create_income_collection(income_revenues, years_collection)
+              #  for income in reversed(income_revenues_collection):
+               #     print("year: " ,income.id_year)
+                #    #print("income: " ,income.income)
+                 #   print("years_growth_pct: " ,income.yearly_growth_pct)
+
+
                 income_gross_profit_collection = new_income.create_income_collection(income_gross_profit, years_collection, IncomeGrossProfit)
                 income_EBIT_collection = new_income.create_income_collection(income_EBIT, years_collection, IncomeEBIT)
                 income_net_profit_collection = new_income.create_income_collection(income_net_profit, years_collection, IncomeNetProfit)
                 share_price = financial_parser.get_share_price(financial_data_soup)
 
                 indicator_report_url = f"https://www.biznesradar.pl/wskazniki-wartosci-rynkowej/{correct_company_ticker},Q"
+                print(indicator_report_url)
                 indicator_connection = ConnectionManager(indicator_report_url)
                 indicator_soup = indicator_connection.get_connection()
                 indicator_parser = DataParser("report-table")
@@ -61,6 +68,12 @@ class CompanyFactory:
                 share_amount = indicator_parser.get_newest_share_amount(indicator_soup)
                 price_to_earnings_ratio = financial_parser.fetch_chosen_income(indicators_rows, "Cena / Zysk")
                 price_to_earnings_ratio_collection = new_income.create_income_collection(price_to_earnings_ratio, years_collection_for_indicator, PriceToEarningsRatio)
+               # for elemnt in price_to_earnings_ratio_collection:
+                #    print(elemnt.id_year)
+                 #   print(elemnt.income)
+                  #  print(elemnt.yearly_growth_pct)
+                   # print(elemnt.yearly_growth_Industry_pct)
+
 
                 new_company = f"{company_ticker}"
                 new_company = Company(company_ticker, company_name_collection[count] , share_price, income_revenues_collection,
