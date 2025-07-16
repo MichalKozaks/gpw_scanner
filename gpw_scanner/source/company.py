@@ -3,7 +3,7 @@ class Company:
         self.name = name
         self.ticker = ticker
         self.share_price = share_price
-        self.income_revenue = income_revenue_collection
+        self.income_revenue_collection = income_revenue_collection
         self.income_gross_profit = income_gross_profit_collection
         self.income_EBIT = income_EBIT_collection
         self.income_net_profit_collection = income_net_profit_collection

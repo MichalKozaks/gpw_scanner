@@ -39,7 +39,6 @@ class Report:
         if number_of_elements == 0 or number_of_elements < 20:
             print("Not enough data to calculate average value")
             return 0
-#ToDo: safe for company that hasn't 20 quarterrs in idicators history!
         for value in collection[-num_of_quartals:]:
             total += int(value)
 
@@ -47,6 +46,12 @@ class Report:
         avg = total / num_of_quartals
 
         return avg
+
+    def calculate_non_negative_ratio(self, collection):
+        total = len(collection)
+        non_negative_count = sum(1 for x in collection if x >= 0)
+        ratio = (non_negative_count / total) * 100
+        return f"{ratio}%"
 
     def calculate_score(self, value):
         if value is not None:
@@ -75,8 +80,8 @@ class Report:
         for company in company_collection:
             scoring = 0
             share_price = company.share_price
-            yearly_income_revenues = company.income_revenue[-1].yearly_growth_pct
-            yearly_income_revenues_industry = company.income_revenue[-1].yearly_growth_Industry_pct
+            yearly_income_revenues = company.income_revenue_collection[-1].yearly_growth_pct
+            yearly_income_revenues_industry = company.income_revenue_collection[-1].yearly_growth_Industry_pct
             yearly_income_gross_profit = company.income_gross_profit[-1].yearly_growth_pct
             yearly_income_gross_profit_industry = company.income_gross_profit[-1].yearly_growth_Industry_pct
             yearly_income_EBIT = company.income_EBIT[-1].yearly_growth_pct
@@ -87,7 +92,6 @@ class Report:
             price_to_earnings_collection = []
             for pe in company.price_to_earnings_collection:
                 price_to_earnings_collection.append(pe.income)
-             #   print(pe.income)
 
             price_to_earnings_ratio_avr = self.calculate_avg_value(price_to_earnings_collection, 20)
 
@@ -99,6 +103,11 @@ class Report:
             eps = self.calculate_EPS(quarterly_sum_of_net_profit, share_amount)
             pe = self.calculate_PE(share_price, eps)
 
+            temp_income_revenues_collection = []
+            for element in company.income_revenue_collection:
+                temp_income_revenues_collection.append(float(element.yearly_growth_pct))
+
+            no_negative_income_revenues_ratio = self.calculate_non_negative_ratio(temp_income_revenues_collection)
             revenue_score = self.calculate_score(yearly_income_revenues)
             gross_score = self.calculate_score(yearly_income_gross_profit)
             ebit_score = self.calculate_score(yearly_income_EBIT)
@@ -107,8 +116,8 @@ class Report:
                 scoring += revenue_score + gross_score + ebit_score + net_score + 50
             else:
                 scoring += revenue_score + gross_score + ebit_score + net_score
-            new_entity = RankPosition(format(scoring, '.2f'), company.name, company.ticker, share_price, eps, pe, price_to_earnings_ratio_avr, yearly_income_revenues, yearly_income_revenues_industry,
-                                      yearly_income_gross_profit, yearly_income_gross_profit_industry, yearly_income_EBIT, yearly_income_EBIT_industry, yearly_income_net_profit, yearly_income_net_profit_industry)
+            new_entity = RankPosition(format(scoring, '.2f'), company.name, company.ticker, share_price, eps, pe, price_to_earnings_ratio_avr, f"{yearly_income_revenues}%", f"{yearly_income_revenues_industry}%",
+                                      f"{yearly_income_gross_profit}%", f"{yearly_income_gross_profit_industry}%", f"{yearly_income_EBIT}%", f"{yearly_income_EBIT_industry}%", f"{yearly_income_net_profit}%", f"{yearly_income_net_profit_industry}%", no_negative_income_revenues_ratio)
             ranking.append(new_entity)
         return ranking
 
@@ -117,7 +126,7 @@ class Report:
         sorted_ranking =sorted(ranking, key=lambda rank: float(rank.points), reverse=True)
         file = open(f"C:\\gpw_scanner\\gpw_scanner\\resources\\gpw_report_{report_date}.csv", mode="w", newline="", encoding="utf-8")
         writer = csv.DictWriter(file, fieldnames=["Points", "Company", "Ticker", "Cena akcji", "Zysk na akcje(EPS)", "Cena do Zysku(PE)","Srednia wartosc Cena do Zysku dla 5-ciu lat", "Przychody ze sprzedazy [%] r/r", "Przychody ze sprzedazy branza [%] r/r",
-                                                      "Zysk ze sprzedazy [%] r/r","Zysk ze sprzedazy branza [%] r/r" , "Zysk operacyjny [%] (EBIT)", "Zysk operacyjny branza [%] (EBIT)", "Zysk Netto [%]", "Zysk Netto branza [%]"])
+                                                      "Zysk ze sprzedazy [%] r/r","Zysk ze sprzedazy branza [%] r/r" , "Zysk operacyjny [%] (EBIT)", "Zysk operacyjny branza [%] (EBIT)", "Zysk Netto [%]", "Zysk Netto branza [%]", "Liczba kwartalow z nieujemnymi przychodami"])
         writer.writeheader()
         for rank in sorted_ranking:
             writer.writerow({
@@ -135,7 +144,8 @@ class Report:
                 "Zysk operacyjny [%] (EBIT)": rank.yearly_income_EBIT,
                 "Zysk operacyjny branza [%] (EBIT)": rank.yearly_income_EBIT_industry,
                 "Zysk Netto [%]": rank.yearly_income_net_profit,
-                "Zysk Netto branza [%]": rank.yearly_income_net_profit_industry
+                "Zysk Netto branza [%]": rank.yearly_income_net_profit_industry,
+                "Liczba kwartalow z nieujemnymi przychodami": rank.no_negative_income_revenues_ratio
 
             })
         print("The cvs report was successfully created!")
