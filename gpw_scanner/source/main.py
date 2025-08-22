@@ -16,7 +16,7 @@ stock_table = stock_parser.table_finder(stock_soup)
 company_name_collection , company_ticker_collection = stock_parser.fetch_company_information(stock_table)
 
 CompanyFactory = CompanyFactory()
-Company_collection = CompanyFactory.create_company_collection(company_name_collection, company_name_collection)
+Company_collection = CompanyFactory.create_company_collection(company_name_collection, company_ticker_collection)
 
 ranking = Report()
 ranking.export_to_csv(ranking.get_report(Company_collection))

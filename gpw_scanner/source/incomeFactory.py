@@ -22,11 +22,13 @@ class IncomeFactory:
                 r_to_r = match.group("rr") if match.group("rr") else 0
                 r_to_r_industry = match.group("branza1") if match.group("branza1") else 0
             else:
-                year_income = 0
-                r_to_r = 0
-                r_to_r_industry = 0
+                continue  # Skip invalid or unparseable rows instead of inserting 0s
+                #year_income = 0
+                #r_to_r = 0
+                #r_to_r_industry = 0
 
             new_income = cls(years[i], year_income, r_to_r, r_to_r_industry)
+            print("new income", new_income.id_year, new_income.yearly_growth_Industry_pct )
             income_collection.append(new_income)
 
         return income_collection

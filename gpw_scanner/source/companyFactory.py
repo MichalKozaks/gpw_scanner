@@ -13,11 +13,11 @@ class CompanyFactory:
     def __init__(self):
         pass
 
-    def create_company_collection(self, company_ticker_collection, company_name_collection):
+    def create_company_collection(self,company_name_collection,  company_ticker_collection):
         company_collection = []
         count = 0 #temporary solution for restrict amount of company
         for company_ticker in company_ticker_collection:
-         #  if count < 2 :
+           if count < 2 :
                 correct_company_ticker = company_ticker
                 if re.search(r'\([^)]*\)', company_ticker):
                     correct_company_ticker = re.sub(r'\s+\([^)]*\)', '', company_ticker)
@@ -47,6 +47,11 @@ class CompanyFactory:
                 years_collection = financial_parser.fetch_report_years(financial_rows)
                 new_income = IncomeFactory()
                 income_revenues_collection = new_income.create_income_collection(income_revenues, years_collection)
+              #  for income in income_revenues_collection:
+                   # print("year: ", income.id_year)
+             #     #  print("income %:", income.yearly_growth_pct)
+               # for incom in income_revenues:
+                 #   print(incom)
                 income_gross_profit_collection = new_income.create_income_collection(income_gross_profit, years_collection, IncomeGrossProfit)
                 income_EBIT_collection = new_income.create_income_collection(income_EBIT, years_collection, IncomeEBIT)
                 income_net_profit_collection = new_income.create_income_collection(income_net_profit, years_collection, IncomeNetProfit)
@@ -63,7 +68,7 @@ class CompanyFactory:
                 price_to_earnings_ratio_collection = new_income.create_income_collection(price_to_earnings_ratio, years_collection_for_indicator, PriceToEarningsRatio)
 
                 new_company = f"{company_ticker}"
-                new_company = Company(company_ticker, company_name_collection[count] , share_price, income_revenues_collection,
+                new_company = Company(company_name_collection[count], company_ticker, share_price, income_revenues_collection,
                                   income_gross_profit_collection, income_EBIT_collection, income_net_profit_collection, share_amount, price_to_earnings_ratio_collection)
                 company_collection.append(new_company)
                 count += 1
