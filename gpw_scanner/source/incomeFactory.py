@@ -6,12 +6,18 @@ class IncomeFactory:
     def __init__(self):
         pass
 
-    def create_income_collection(self, incomes, years, cls=IncomeRevenues):
+    def create_income_collection(self, incomes, years, cls=IncomeRevenues, floating_format=False):
         income_collection = []
-        pattern = re.compile(
-            r'(?P<value>[+-]?\d{1,3}(?:\s\d{3})?)'
-            r'(?:r/r(?P<rr>[+-]?\d+\.\d+)%~branża(?P<branza1>[+-]?\d+\.\d+))?'
-        )
+        if floating_format:
+            pattern = re.compile(
+                r'(?P<value>[+-]?\d{1,3}(?:[.,]\d{1,2})?)'  # match numbers with , or .
+                r'(?:r/r(?P<rr>[+-]?\d+\.\d+)%~branża(?P<branza1>[+-]?\d+\.\d+))?'
+            )
+        else:
+            pattern = re.compile(
+             r'(?P<value>[+-]?\d{1,3}(?:\s\d{3})?)'
+             r'(?:r/r(?P<rr>[+-]?\d+\.\d+)%~branża(?P<branza1>[+-]?\d+\.\d+))?'
+            )
 
         for i in range(min(len(incomes), len(years))):
             income = incomes[i]

@@ -26,7 +26,7 @@ class Report:
         return sum_of_income
 
     def calculate_EPS(self, income_net_profit, share_amount ):
-        eps = float(income_net_profit) * 1000 / float(share_amount)
+        eps = int(income_net_profit) * 1000  / int(share_amount)
         return eps
 
     def calculate_PE(self, share_price, eps):
@@ -40,12 +40,17 @@ class Report:
         if number_of_elements == 0 or number_of_elements < 20:
             print("Not enough data to calculate average value")
             return 0
+
         for value in collection[-num_of_quartals:]:
-            total += int(value)
+            # Ensure the value is a string and replace comma with dot
+            cleaned_value = str(value).replace(",", ".")
+            try:
+                total += float(cleaned_value)
+            except ValueError:
+                print(f"Skipping invalid value: {value}")
+                continue
 
-        #avg = total / number_of_elements
         avg = total / num_of_quartals
-
         return avg
 
     def calculate_non_negative_ratio(self, collection):
@@ -125,6 +130,7 @@ class Report:
             for pe in company.price_to_earnings_collection:
                 price_to_earnings_collection.append(pe.income)
 
+
             price_to_earnings_ratio_avr = self.calculate_avg_value(price_to_earnings_collection, 20)
 
             income_net_collection = []
@@ -133,16 +139,22 @@ class Report:
 
             quarterly_sum_of_net_profit = self.calculate_income(income_net_collection, -4)
             eps = self.calculate_EPS(quarterly_sum_of_net_profit, share_amount)
-            pe = self.calculate_PE(share_price, eps)
+
+            if price_to_earnings_collection:
+                pe = price_to_earnings_collection[-1]
+            else:
+                pe = None
+
+            if pe == 0 or pe is None:
+                pe = self.calculate_PE(share_price, eps)
+
 
             temp_income_revenues_collection = []
             for element in company.income_revenue_collection:
                 temp_income_revenues_collection.append(float(element.yearly_growth_pct))
 
-           # print("Ilosc elementow w kolekcji:", len(temp_income_revenues_collection))
             no_negative_income_revenues_ratio = self.calculate_non_negative_ratio(temp_income_revenues_collection)
             constantly_income_revenues_increase = self.last_years_all_income_revenue_positive(temp_income_revenues_collection, 40)
-           # print("growth value:" ,constantly_income_revenues_increase)
             revenue_score = self.calculate_score(yearly_income_revenues)
             gross_score = self.calculate_score(yearly_income_gross_profit)
             ebit_score = self.calculate_score(yearly_income_EBIT)

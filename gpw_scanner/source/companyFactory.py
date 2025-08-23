@@ -17,7 +17,7 @@ class CompanyFactory:
         company_collection = []
         count = 0 #temporary solution for restrict amount of company
         for company_ticker in company_ticker_collection:
-           if count < 2 :
+           if count < 10:
                 correct_company_ticker = company_ticker
                 if re.search(r'\([^)]*\)', company_ticker):
                     correct_company_ticker = re.sub(r'\s+\([^)]*\)', '', company_ticker)
@@ -65,7 +65,10 @@ class CompanyFactory:
                 years_collection_for_indicator = indicator_parser.fetch_report_years(indicators_rows)
                 share_amount = indicator_parser.get_newest_share_amount(indicator_soup)
                 price_to_earnings_ratio = financial_parser.fetch_chosen_income(indicators_rows, "Cena / Zysk")
-                price_to_earnings_ratio_collection = new_income.create_income_collection(price_to_earnings_ratio, years_collection_for_indicator, PriceToEarningsRatio)
+                price_to_earnings_ratio_collection = new_income.create_income_collection(price_to_earnings_ratio, years_collection_for_indicator, PriceToEarningsRatio, True)
+
+                for pe in price_to_earnings_ratio:
+                    print("Cena/zysk" ,pe)
 
                 new_company = f"{company_ticker}"
                 new_company = Company(company_name_collection[count], company_ticker, share_price, income_revenues_collection,
